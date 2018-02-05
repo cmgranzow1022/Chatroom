@@ -13,7 +13,7 @@ namespace Server
     class Server
     {
         public static ServerClient client;
-        TcpListener server;
+        public TcpListener server;
         public Server()
         {
             server = new TcpListener(IPAddress.Parse("192.168.0.128"), 9999);
@@ -22,7 +22,7 @@ namespace Server
         public void Run()
         {
             AcceptClient();
-            string message = client.Recieve();
+            string message = client.Receive();
             Respond(message);
         }
         private void AcceptClient()

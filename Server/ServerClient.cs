@@ -23,13 +23,13 @@ namespace Server
             byte[] message = Encoding.ASCII.GetBytes(Message);
             stream.Write(message, 0, message.Count());
         }
-        public string Recieve()
+        public string Receive()
         {
-            byte[] recievedMessage = new byte[256];
-            stream.Read(recievedMessage, 0, recievedMessage.Length);
-            string recievedMessageString = Encoding.ASCII.GetString(recievedMessage);
-            Console.WriteLine(recievedMessageString);
-            return recievedMessageString;
+            byte[] receivedMessage = new byte[256];
+            stream.Read(receivedMessage, 0, receivedMessage.Length);
+            string receivedMessageString = Encoding.ASCII.GetString(receivedMessage);
+            Console.WriteLine(receivedMessageString);
+            return receivedMessageString;
         }
 
     }
