@@ -30,5 +30,11 @@ namespace Client
             stream.Read(receivedMessage, 0, receivedMessage.Length);
             UI.DisplayMessage(Encoding.ASCII.GetString(receivedMessage));
         }
+        public void Start()
+        {
+            Task.Run(() => Send());
+            Task value = Task.Run(() => Receive());
+            value.Wait();
+        }
     }
 }
