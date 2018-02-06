@@ -20,15 +20,21 @@ namespace Client
         }
         public void Send()
         {
-            string messageString = UI.GetInput();
-            byte[] message = Encoding.ASCII.GetBytes(messageString);
-            stream.Write(message, 0, message.Count());
+            while (true)
+            {
+                string messageString = UI.GetInput();
+                byte[] message = Encoding.ASCII.GetBytes(messageString);
+                stream.Write(message, 0, message.Count());
+            }
         }
         public void Receive()
         {
-            byte[] receivedMessage = new byte[256];
-            stream.Read(receivedMessage, 0, receivedMessage.Length);
-            UI.DisplayMessage(Encoding.ASCII.GetString(receivedMessage));
+            while (true)
+            {
+                byte[] receivedMessage = new byte[256];
+                stream.Read(receivedMessage, 0, receivedMessage.Length);
+                UI.DisplayMessage(Encoding.ASCII.GetString(receivedMessage));
+            }
         }
         public void Start()
         {

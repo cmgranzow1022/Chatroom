@@ -11,13 +11,13 @@ namespace Server
     {
         NetworkStream stream;
         TcpClient client;
-        public string UserId;
+        public int UserId;
         public string userName;
         public ServerClient(NetworkStream Stream, TcpClient Client)
         {
             stream = Stream;
             client = Client;
-            UserId = "495933b6-1762-47a1-b655-483510072e73";
+            UserId = 1;
         }
         public void Send(string Message)
         {
@@ -35,9 +35,11 @@ namespace Server
         public string GetUserName()
         {
             Send("What is your screen name?");
-            userName = Receive();
+            userName = Receive().Trim('\0');
             return userName;
         }
+
+
 
     }
 }

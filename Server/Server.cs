@@ -14,32 +14,40 @@ namespace Server
     {
         public static ServerClient client;
         public TcpListener server;
-        public Dictionary<int, ServerClient> userList = new Dictionary<int, ServerClient>();
+        public Dictionary<int, ServerClient> userDictionary = new Dictionary<int, ServerClient>();
+        public int userIdCounter;
+        public ServerClient tempClient;
         public Server()
         {
             server = new TcpListener(IPAddress.Parse("192.168.0.128"), 9999);
+            userIdCounter = 0; 
             server.Start();
+
         }
         public void Run()
         {
-            ServerClient tempClient = AcceptClient();
-
+            Task.Run(() => AcceptClient());
             string message = client.Receive();
             Respond(message);
         }
-        private ServerClient AcceptClient()
+        private void AcceptClient()
         {
-            TcpClient clientSocket = default(TcpClient);
-            clientSocket = server.AcceptTcpClient();          
-            Console.WriteLine("Connected");
-            NetworkStream stream = clientSocket.GetStream();
-            client = new ServerClient(stream, clientSocket);
-            //StoreClientInDictionary(userID, tempClient);
-            return client;
+            while (true)
+            {
+                TcpClient clientSocket = default(TcpClient);
+                clientSocket = server.AcceptTcpClient();
+                Console.WriteLine("Connected");
+                NetworkStream stream = clientSocket.GetStream();
+                client = new ServerClient(stream, clientSocket);
+                AddClientToDictionary(client);
+                client.GetUserName();
+            }
         }
-        public void StoreClientInDictionary(int userID, ServerClient tempClient)
+        public void AddClientToDictionary(ServerClient client)
         {
-            userList.Add(userID, tempClient);
+            userDictionary.Add(userIdCounter, client);
+            client.UserId = userIdCounter;
+            userIdCounter++;
         }
         private void Respond(string body)
         {
