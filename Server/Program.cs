@@ -10,14 +10,8 @@ namespace Server
     {
         static void Main(string[] args)
         {
-            //new Server().Run();
-            Server chad = new Server();
-            for (int x = 1; x < 10; x++)
-            {
-                chad.Run();
-            }
+            new Server().Run();
             Console.ReadLine();
-
         }
     }
 }

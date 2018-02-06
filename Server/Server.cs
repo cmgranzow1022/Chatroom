@@ -14,7 +14,7 @@ namespace Server
     {
         public static ServerClient client;
         public TcpListener server;
-        public Dictionary<string, ServerClient> userList = new Dictionary<string, ServerClient>();
+        public Dictionary<int, ServerClient> userList = new Dictionary<int, ServerClient>();
         public Server()
         {
             server = new TcpListener(IPAddress.Parse("192.168.0.128"), 9999);
@@ -23,7 +23,7 @@ namespace Server
         public void Run()
         {
             ServerClient tempClient = AcceptClient();
-            //StoreClient(userName, tempClient);
+
             string message = client.Receive();
             Respond(message);
         }
@@ -34,12 +34,12 @@ namespace Server
             Console.WriteLine("Connected");
             NetworkStream stream = clientSocket.GetStream();
             client = new ServerClient(stream, clientSocket);
-
+            //StoreClientInDictionary(userID, tempClient);
             return client;
         }
-        public void StoreClient(string userName, ServerClient tempClient)
+        public void StoreClientInDictionary(int userID, ServerClient tempClient)
         {
-            userList.Add(userName, tempClient);
+            userList.Add(userID, tempClient);
         }
         private void Respond(string body)
         {

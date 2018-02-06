@@ -12,6 +12,7 @@ namespace Server
         NetworkStream stream;
         TcpClient client;
         public string UserId;
+        public string userName;
         public ServerClient(NetworkStream Stream, TcpClient Client)
         {
             stream = Stream;
@@ -30,6 +31,12 @@ namespace Server
             string receivedMessageString = Encoding.ASCII.GetString(receivedMessage);
             Console.WriteLine(receivedMessageString);
             return receivedMessageString;
+        }
+        public string GetUserName()
+        {
+            Send("What is your screen name?");
+            userName = Receive();
+            return userName;
         }
 
     }
