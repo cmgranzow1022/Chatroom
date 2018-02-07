@@ -29,8 +29,8 @@ namespace Server
         public void Run()
         {
             Task.Run(() => AcceptClient());
-            //Task.Run(() => PostToChatroom());
-            //string message = client.Receive();
+            Task.Run(() => PostToChatroom());
+
             //Respond(message);
         }
         private void AcceptClient()
@@ -46,7 +46,14 @@ namespace Server
                 client.GetUserName();
                 AddClientToDictionary(client);
                 NewClientNotification(client);
-                PostToChatroom();
+                Task.Run(() => OpenNewChat(client));
+            }
+        }
+        public void OpenNewChat(ServerClient client)
+        {
+            while (true)
+            {
+                client.Receive();
             }
         }
         public void AddClientToDictionary(ServerClient client)
