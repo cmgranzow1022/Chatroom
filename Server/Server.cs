@@ -69,7 +69,7 @@ namespace Server
         public void AddToQueue(string message, ServerClient client)
         {
             Message currentMessage = new Message(client, message);
-            currentMessage.Body = currentMessage.userName + ": " + currentMessage.Body;
+            currentMessage.Body = currentMessage.userName + ": " + currentMessage.Body.Trim('\0');
             messages.Enqueue(currentMessage);
         }
         private Message RemoveFromQueue()
