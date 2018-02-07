@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-    class Server
+    class Server : Observed
     {
         public static ServerClient client;
         public TcpListener server;
@@ -63,7 +63,15 @@ namespace Server
         {
             string notification = client.userName + " has joined the chatroom.";
             Message messNotification = new Message(client, notification);
-            messages.Enqueue(messNotification);
+            
+            lock (messageLock)
+            {
+                foreach (KeyValuePair<int, ServerClient> clients in userDictionary)
+                {
+                    clients.Value.Send(messNotification.Body);
+
+                }
+            }
         }
         public void AddToQueue(string message, ServerClient client)
         {

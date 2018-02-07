@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-    class ServerClient
+    class ServerClient : Observer
     {
         NetworkStream stream;
         TcpClient client;
@@ -22,6 +22,10 @@ namespace Server
             server = Server;
             GetUserName();
             Task.Run(() => ConstantReceive());
+        }
+        public void NotifyUser(string message)
+        {
+            Send(message);
         }
         public void Send(string Message)
         {
