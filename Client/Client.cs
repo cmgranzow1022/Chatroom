@@ -29,15 +29,16 @@ namespace Client
         }
         public void Receive()
         {
-            while (true)
-            {
+            //while (true)
+            //{
                 byte[] receivedMessage = new byte[256];
                 stream.Read(receivedMessage, 0, receivedMessage.Length);
                 UI.DisplayMessage(Encoding.ASCII.GetString(receivedMessage));
-            }
+            //}
         }
         public void Start()
         {
+            //while (possible)
             Task.Run(() => Send());
             Task value = Task.Run(() => Receive());
             value.Wait();

@@ -17,6 +17,7 @@ namespace Server
         public Dictionary<int, ServerClient> userDictionary = new Dictionary<int, ServerClient>();
         public int userIdCounter;
         public ServerClient tempClient;
+        private Queue<Message> messages;
         public Server()
         {
             server = new TcpListener(IPAddress.Parse("192.168.0.128"), 9999);
@@ -27,8 +28,8 @@ namespace Server
         public void Run()
         {
             Task.Run(() => AcceptClient());
-            string message = client.Receive();
-            Respond(message);
+            //string message = client.Receive();
+            //Respond(message);
         }
         private void AcceptClient()
         {
@@ -41,6 +42,7 @@ namespace Server
                 client = new ServerClient(stream, clientSocket);
                 AddClientToDictionary(client);
                 client.GetUserName();
+                NewClientNotifications(client);
             }
         }
         public void AddClientToDictionary(ServerClient client)
@@ -53,5 +55,16 @@ namespace Server
         {
              client.Send(body);
         }
+        public void NewClientNotifications(ServerClient client)
+        {
+            string notification = client.userName + " has joined the chatroom.";
+            //add to queue
+        }
+        public void AddToQueue(string message, ServerClient client)
+        {
+            Message currentMessage = new Message(client, message);
+            messages.Enqueue(currentMessage);
+        }
+
     }
 }

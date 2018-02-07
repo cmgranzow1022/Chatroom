@@ -35,7 +35,7 @@ namespace Server
         public string GetUserName()
         {
             Send("What is your screen name?");
-            userName = Receive().Trim('\0');
+            userName = Receive().Trim ('\0');
             return userName;
         }
 
