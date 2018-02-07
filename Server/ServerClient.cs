@@ -11,13 +11,17 @@ namespace Server
     {
         NetworkStream stream;
         TcpClient client;
+        Server server;
         public int UserId;
         public string userName;
-        public ServerClient(NetworkStream Stream, TcpClient Client)
+        public ServerClient(NetworkStream Stream, TcpClient Client, Server Server)
         {
             stream = Stream;
             client = Client;
             UserId = 1;
+            server = Server;
+            GetUserName();
+            Task.Run(() => ConstantReceive());
         }
         public void Send(string Message)
         {
@@ -38,7 +42,15 @@ namespace Server
             userName = Receive().Trim ('\0');
             return userName;
         }
-
+        public void ConstantReceive()
+        {
+            while (true)
+            {
+                string incomingMessage = Receive().Trim('\0');
+               
+                server.AddToQueue(incomingMessage, this);
+            }
+        }
 
 
     }

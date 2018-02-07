@@ -30,7 +30,6 @@ namespace Server
         {
             Task.Run(() => AcceptClient());
             Task.Run(() => PostToChatroom());
-
             //Respond(message);
         }
         private void AcceptClient()
@@ -41,19 +40,17 @@ namespace Server
                 clientSocket = server.AcceptTcpClient();
                 Console.WriteLine("Connected");
                 NetworkStream stream = clientSocket.GetStream();
-                client = new ServerClient(stream, clientSocket);
-
-                client.GetUserName();
+                client = new ServerClient(stream, clientSocket, this);
                 AddClientToDictionary(client);
                 NewClientNotification(client);
-                Task.Run(() => OpenNewChat(client));
             }
         }
         public void OpenNewChat(ServerClient client)
         {
             while (true)
             {
-                client.Receive();
+              string incomingMessage =  client.Receive();
+                AddToQueue(incomingMessage, client);
             }
         }
         public void AddClientToDictionary(ServerClient client)
@@ -62,18 +59,17 @@ namespace Server
             client.UserId = userIdCounter;
             userIdCounter++;
         }
-        private void Respond(string body)
-        {
-             client.Send(body);
-        }
+
         public void NewClientNotification(ServerClient client)
         {
             string notification = client.userName + " has joined the chatroom.";
-            AddToQueue(notification, client);
+            Message messNotification = new Message(client, notification);
+            messages.Enqueue(messNotification);
         }
         public void AddToQueue(string message, ServerClient client)
         {
             Message currentMessage = new Message(client, message);
+            currentMessage.Body = currentMessage.userName + ": " + currentMessage.Body;
             messages.Enqueue(currentMessage);
         }
         private Message RemoveFromQueue()
