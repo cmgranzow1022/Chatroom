@@ -17,17 +17,19 @@ namespace Server
         public Dictionary<int, ServerClient> userDictionary = new Dictionary<int, ServerClient>();
         public int userIdCounter;
         public ServerClient tempClient;
-        private Queue<Message> messages;
+        public Queue<Message> messages; 
+        private Object messageLock = new object();
         public Server()
         {
             server = new TcpListener(IPAddress.Parse("192.168.0.128"), 9999);
             userIdCounter = 0; 
             server.Start();
-
+            messages = new Queue<Message>();
         }
         public void Run()
         {
             Task.Run(() => AcceptClient());
+            //Task.Run(() => PostToChatroom());
             //string message = client.Receive();
             //Respond(message);
         }
@@ -40,9 +42,11 @@ namespace Server
                 Console.WriteLine("Connected");
                 NetworkStream stream = clientSocket.GetStream();
                 client = new ServerClient(stream, clientSocket);
-                AddClientToDictionary(client);
+
                 client.GetUserName();
-                NewClientNotifications(client);
+                AddClientToDictionary(client);
+                NewClientNotification(client);
+                PostToChatroom();
             }
         }
         public void AddClientToDictionary(ServerClient client)
@@ -55,16 +59,40 @@ namespace Server
         {
              client.Send(body);
         }
-        public void NewClientNotifications(ServerClient client)
+        public void NewClientNotification(ServerClient client)
         {
             string notification = client.userName + " has joined the chatroom.";
-            //add to queue
+            AddToQueue(notification, client);
         }
         public void AddToQueue(string message, ServerClient client)
         {
             Message currentMessage = new Message(client, message);
             messages.Enqueue(currentMessage);
         }
+        private Message RemoveFromQueue()
+        {
+            return messages.Dequeue();
+        }
+        public void PostToChatroom()
+            {
+            while (true)
+            {
+                if (messages != null)
+                {
+                    if (messages.Count > 0)
+                    {
+                        Message message = RemoveFromQueue();
+                        lock (messageLock)
+                        {
+                            foreach (KeyValuePair<int, ServerClient> clients in userDictionary)
+                            {
+                                clients.Value.Send(message.Body);
 
+                            }
+                        }
+                    }
+                }
+            }
+            }
     }
 }
