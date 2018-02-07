@@ -53,13 +53,12 @@ namespace Server
                 AddToQueue(incomingMessage, client);
             }
         }
-        //public void AddClientToDictionary(ServerClient client)
-        //{
-        //    userDictionary.Add(userIdCounter, client);
-        //    client.UserId = userIdCounter;
-        //    userIdCounter++;
-        //}
-
+        public void AddClientToDictionary(ServerClient client)
+        {
+            userDictionary.Add(userIdCounter, client);
+            client.UserId = userIdCounter;
+            userIdCounter++;
+        }
         public void NewClientNotification(ServerClient client)
         {
             string notification = client.userName + " has joined the chatroom.";
