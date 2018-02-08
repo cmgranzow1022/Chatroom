@@ -17,7 +17,7 @@ namespace Server
             {
                 using (StreamWriter w = File.AppendText("log.txt"))
                 {
-                    w.WriteLine(notification + "\r");
+                    w.WriteLine(DateTime.Now + ": "+ notification + "\r");
                 }
             }
         }
@@ -27,7 +27,7 @@ namespace Server
             {
                 using (StreamWriter w = File.AppendText("log.txt"))
                 {
-                    w.WriteLine(message + "\r");
+                    w.WriteLine(DateTime.Now + ": " + message + "\r");
                 }
             }
         }
@@ -37,7 +37,7 @@ namespace Server
             {
                 using (StreamWriter w = File.AppendText("log.txt"))
                 {
-                    w.WriteLine(notification + "\r");
+                    w.WriteLine(DateTime.Now + ": " + notification + "\r");
                 }
             }
         }  
@@ -45,7 +45,7 @@ namespace Server
         {
             using (StreamWriter w = File.AppendText("log.txt"))
             {
-                w.WriteLine("The server was closed" + "\n\r");
+                w.WriteLine(DateTime.Now + ": The server was closed" + "\n\r");
             }
         } 
     }

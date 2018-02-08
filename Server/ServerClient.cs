@@ -27,6 +27,13 @@ namespace Server
         {
             Send(message);
         }
+        public bool IsConnected
+        {
+            get
+            {
+                return client.Connected;
+            }
+        }
         public void Send(string Message)
         {
             byte[] message = Encoding.ASCII.GetBytes(Message);
@@ -34,11 +41,22 @@ namespace Server
         }
         public string Receive()
         {
-            byte[] receivedMessage = new byte[256];
-            stream.Read(receivedMessage, 0, receivedMessage.Length);
-            string receivedMessageString = Encoding.ASCII.GetString(receivedMessage);
-            Console.WriteLine(receivedMessageString);
-            return receivedMessageString;
+            try
+            {
+                byte[] receivedMessage = new byte[256];
+                stream.Read(receivedMessage, 0, receivedMessage.Length);
+                string receivedMessageString = Encoding.ASCII.GetString(receivedMessage);
+                Console.WriteLine(receivedMessageString);
+                return receivedMessageString;
+            }
+            catch
+            {
+                server.userDictionary.Remove(UserId);
+                string error = "******Goodbye!******";
+                server.logger.LogLeave(error);
+                //server.AddToQueue(error, this);
+                return error;
+            }
         }
         public string GetUserName()
         {
@@ -48,14 +66,11 @@ namespace Server
         }
         public void ConstantReceive()
         {
-            while (true)
+            while (IsConnected == true)
             {
-                string incomingMessage = Receive().Trim('\0');
-               
+                string incomingMessage = Receive().Trim('\0'); 
                 server.AddToQueue(incomingMessage, this);
             }
         }
-
-
     }
 }

@@ -18,7 +18,7 @@ namespace Server
         public int userIdCounter;
         public Queue<Message> messages; 
         private Object messageLock = new object();
-        ILogger logger;
+        public ILogger logger;
 
         public Server(ILogger logger)
         {
@@ -31,9 +31,7 @@ namespace Server
         public void Run()
         {
             Task.Run(() => AcceptClient());
-
             Task.Run(() => PostToChatroom());
-            Task.Run(() => CheckCurrentUsers());
             //Respond(message);
         }
         private void AcceptClient()
@@ -47,16 +45,17 @@ namespace Server
                 client = new ServerClient(stream, clientSocket, this);
                 AddClientToDictionary(client);
                 NewClientNotification(client);
+                CheckCurrentUsers();
             }
         }
-        public void OpenNewChat(ServerClient client)
-        {
-            while (true)
-            {
-              string incomingMessage =  client.Receive();
-                AddToQueue(incomingMessage, client);
-            }
-        }
+        //public void OpenNewChat(ServerClient client)
+        //{
+        //    while (true)
+        //    {
+        //      string incomingMessage =  client.Receive();
+        //        AddToQueue(incomingMessage, client);
+        //    }
+        //}
         public void AddClientToDictionary(ServerClient client)
         {
             userDictionary.Add(userIdCounter, client);
@@ -73,23 +72,15 @@ namespace Server
                 foreach (KeyValuePair<int, ServerClient> clients in userDictionary)
                 {
                     clients.Value.Send(messNotification.Body);
-
                 }
             }
         }
-        public void ClientLeftNotification(ServerClient client)
-        {
-            string notification = client.userName + " has left the chatroom.";
-            logger.LogLeave(notification);
-        }
         public void CheckCurrentUsers()
         {
-            foreach (KeyValuePair<int, ServerClient> clients in userDictionary)
+            if(client.IsConnected == false)
             {
-                if (client == null)
-                {
-                    userDictionary.Remove(client.UserId);
-                }
+                logger.ServerClosed();
+                Environment.Exit(0);
             }
         }
         public void AddToQueue(string message, ServerClient client)
@@ -115,13 +106,14 @@ namespace Server
                         lock (messageLock)
                         {
                             foreach (KeyValuePair<int, ServerClient> clients in userDictionary)
-                            {
-                                clients.Value.Send(message.Body);
+                            {   
+                                  clients.Value.Send(message.Body);
                             }
                         }
                     }
                 }
             }
             }
+ 
     }
 }
