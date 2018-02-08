@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-    interface ILogger
+     public interface ILogger
     {
-        //Log someone joining
-        //Log messages
-        //Log someone leaving
+        void LogJoin(string notification);
 
+        void LogMessage(string message);
+
+        void LogLeave(string notification);
     }
 }

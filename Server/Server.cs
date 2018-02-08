@@ -31,6 +31,7 @@ namespace Server
         {
             Task.Run(() => AcceptClient());
             Task.Run(() => PostToChatroom());
+            Task.Run(() => CheckCurrentUsers());
             //Respond(message);
         }
         private void AcceptClient()
@@ -74,6 +75,20 @@ namespace Server
                 }
             }
         }
+        public void ClientLeftNotification(ServerClient client)
+        {
+            string notification = client.userName + " has left the chatroom.";
+        }
+        public void CheckCurrentUsers()
+        {
+            foreach (KeyValuePair<int, ServerClient> clients in userDictionary)
+            {
+                if (!(client == null))
+                {
+                    userDictionary.Remove(client.UserId);
+                }
+            }
+        }
         public void AddToQueue(string message, ServerClient client)
         {
             Message currentMessage = new Message(client, message);
@@ -98,7 +113,6 @@ namespace Server
                             foreach (KeyValuePair<int, ServerClient> clients in userDictionary)
                             {
                                 clients.Value.Send(message.Body);
-
                             }
                         }
                     }
