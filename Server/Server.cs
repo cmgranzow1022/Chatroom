@@ -19,9 +19,10 @@ namespace Server
         public ServerClient tempClient;
         public Queue<Message> messages; 
         private Object messageLock = new object();
+
         public Server()
         {
-            server = new TcpListener(IPAddress.Parse("192.168.0.128"), 9999);
+            server = new TcpListener(IPAddress.Any, 9999);
             userIdCounter = 0; 
             server.Start();
             messages = new Queue<Message>();
