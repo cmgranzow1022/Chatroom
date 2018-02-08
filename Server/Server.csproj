@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ILogger.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Observed.cs" />
     <Compile Include="Observer.cs" />
     <Compile Include="ServerClient.cs" />

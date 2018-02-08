@@ -16,20 +16,22 @@ namespace Server
         public TcpListener server;
         public Dictionary<int, ServerClient> userDictionary = new Dictionary<int, ServerClient>();
         public int userIdCounter;
-        public ServerClient tempClient;
         public Queue<Message> messages; 
         private Object messageLock = new object();
+        ILogger logger;
 
-        public Server()
+        public Server(ILogger logger)
         {
             server = new TcpListener(IPAddress.Any, 9999);
             userIdCounter = 0; 
             server.Start();
             messages = new Queue<Message>();
+            this.logger = logger;
         }
         public void Run()
         {
             Task.Run(() => AcceptClient());
+
             Task.Run(() => PostToChatroom());
             Task.Run(() => CheckCurrentUsers());
             //Respond(message);
@@ -65,7 +67,7 @@ namespace Server
         {
             string notification = client.userName + " has joined the chatroom.";
             Message messNotification = new Message(client, notification);
-            
+            logger.LogJoin(notification);
             lock (messageLock)
             {
                 foreach (KeyValuePair<int, ServerClient> clients in userDictionary)
@@ -78,12 +80,13 @@ namespace Server
         public void ClientLeftNotification(ServerClient client)
         {
             string notification = client.userName + " has left the chatroom.";
+            logger.LogLeave(notification);
         }
         public void CheckCurrentUsers()
         {
             foreach (KeyValuePair<int, ServerClient> clients in userDictionary)
             {
-                if (!(client == null))
+                if (client == null)
                 {
                     userDictionary.Remove(client.UserId);
                 }
@@ -108,6 +111,7 @@ namespace Server
                     if (messages.Count > 0)
                     {
                         Message message = RemoveFromQueue();
+                        logger.LogMessage(message.Body);
                         lock (messageLock)
                         {
                             foreach (KeyValuePair<int, ServerClient> clients in userDictionary)

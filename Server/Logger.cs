@@ -40,6 +40,13 @@ namespace Server
                     w.WriteLine(notification + "\r");
                 }
             }
-        }   
+        }  
+        public void ServerClosed()
+        {
+            using (StreamWriter w = File.AppendText("log.txt"))
+            {
+                w.WriteLine("The server was closed" + "\n\r");
+            }
+        } 
     }
 }

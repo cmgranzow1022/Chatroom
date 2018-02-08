@@ -13,5 +13,7 @@ namespace Server
         void LogMessage(string message);
 
         void LogLeave(string notification);
+
+        void ServerClosed();
     }
 }

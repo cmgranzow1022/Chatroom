@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Server
 {
-    class Program
+    class Program 
     {
         static void Main(string[] args)
         {
-            new Server().Run();
+            ILogger logger = new Logger();
+            new Server(logger).Run();
             Console.ReadLine();
         }
     }
