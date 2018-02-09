@@ -32,10 +32,7 @@ namespace Server
         public void Run()
         {
             Task.Run(() => AcceptClient());
-
             Task.Run(() => PostToChatroom());
-
-            //Respond(message);
         }
         private void AcceptClient()
         {
@@ -51,14 +48,6 @@ namespace Server
                 CheckCurrentUsers();
             }
         }
-        //public void OpenNewChat(ServerClient client)
-        //{
-        //    while (true)
-        //    {
-        //      string incomingMessage =  client.Receive();
-        //        AddToQueue(incomingMessage, client);
-        //    }
-        //}
         public void AddClientToDictionary(ServerClient client)
         {
             userDictionary.Add(userIdCounter, client);
@@ -80,7 +69,7 @@ namespace Server
         }
         public void CheckCurrentUsers()
         {
-            if(client.IsConnected == false)
+            if (client.IsConnected == false)
             {
                 logger.ServerClosed();
                 Environment.Exit(0);

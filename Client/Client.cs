@@ -38,7 +38,6 @@ namespace Client
     }
         public void Start()
         {
-            //while (possible)
             Task.Run(() => Send());
             Task value = Task.Run(() => Receive());
             value.Wait();
