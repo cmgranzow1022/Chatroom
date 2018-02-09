@@ -54,7 +54,6 @@ namespace Server
                 server.userDictionary.Remove(UserId);
                 string error = "******Goodbye!******";
                 server.logger.LogLeave(error);
-                //server.AddToQueue(error, this);
                 return error;
             }
         }

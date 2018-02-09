@@ -27,11 +27,14 @@ namespace Server
             server.Start();
             messages = new Queue<Message>();
             this.logger = logger;
+            
         }
         public void Run()
         {
             Task.Run(() => AcceptClient());
+
             Task.Run(() => PostToChatroom());
+
             //Respond(message);
         }
         private void AcceptClient()
@@ -108,6 +111,7 @@ namespace Server
                             foreach (KeyValuePair<int, ServerClient> clients in userDictionary)
                             {   
                                   clients.Value.Send(message.Body);
+ 
                             }
                         }
                     }
