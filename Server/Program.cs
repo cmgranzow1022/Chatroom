@@ -10,6 +10,7 @@ namespace Server
     {
         static void Main(string[] args)
         {
+            Console.Title = "Zinc Chatroom Server";
             ILogger logger = new Logger();
             new Server(logger).Run();
             Console.ReadLine();
